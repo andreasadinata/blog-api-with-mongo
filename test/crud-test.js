@@ -52,36 +52,36 @@ describe('Blog Posts', function () {
             .send(testPost)
             .then(function (res) {
                 res.should.have.status(201);
-//                res.should.be.json;
-//                res.body.should.be.a('object');
-//                res.body.should.include.keys(expectedKeys);
-//                res.body.id.should.not.be.null;
-//                res.body.title.should.equal(testPost.title);
-//                res.body.content.should.equal(testPost.content);
-//                res.body.author.should.equal(testPost.author)
-            });
-    });
-    it('should update items on PUT', function () {
-        const testPut = {
-            title: 'Hey',
-            content: 'Hey',
-            author: 'Andre'
-        }
-        return chai.request(app)
-            .get('/blog-posts')
-            .then(function (res) {
-                testPut.id = res.body[0].id;
-                return chai.request(app)
-                    .put(`/blog-posts/${testPut.id}`)
-                    .send(testPut)
-            })
-            .then(function (res) {
-                res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
-                res.body.should.deep.equal(testPut);
+                res.body.should.include.keys(expectedKeys);
+                res.body.id.should.not.be.null;
+                res.body.title.should.equal(testPost.title);
+                res.body.content.should.equal(testPost.content);
+                res.body.author.should.equal(testPost.author)
             });
     });
+    it('should update blog posts on PUT', function (done) {
+
+        chai.request(app)
+            // first have to get
+            .get('/blog-posts')
+            .end(function (err, res) {
+                const updatedPost = Object.assign(res.body[0], {
+                    title: 'connect the dots',
+                    content: 'la la la la la'
+                });
+                chai.request(app)
+                    .put(`/blog-posts/${res.body[0].id}`)
+                    .send(updatedPost)
+                    .end(function (err, res) {
+                        res.should.have.status(204);
+                        res.should.be.json;
+                    });
+            })
+        done();
+    });
+
     it('should delete items on DELETE', function () {
         return chai.request(app)
             .get('/blog-posts')
