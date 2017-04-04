@@ -6,8 +6,8 @@ const blogPostSchema = mongoose.Schema({
         lastName: String
     },
     title: {
-        type: String
-//        required: true
+        type: String,
+        required: true
     },
     content: {
         type: String
@@ -16,11 +16,13 @@ const blogPostSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
-
+}, {
+    collection: 'blog'
 });
 
+
 blogPostSchema.virtual('authorName').get(function () {
-    return `${this.author.firstName} ${this.author.lastName}`.trim;
+    return `${this.author.firstName} ${this.author.lastName}`.trim();
 });
 
 blogPostSchema.methods.apiRepr = function () {
@@ -36,5 +38,5 @@ blogPostSchema.methods.apiRepr = function () {
 const BlogPost = mongoose.model('BlogPost', blogPostSchema);
 
 module.exports = {
-    BlogPost: BlogPost
+    BlogPost
 };
